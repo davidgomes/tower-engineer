@@ -11,7 +11,7 @@ function love.load()
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
   if not love.filesystem.isFile("data") then
-    love.filesystem.write("data", "0", 1)
+    love.filesystem.write("data", "0", 2)
   end
 
   local contents, length = love.filesystem.read("data", 2)
@@ -56,7 +56,7 @@ function love.update(dt)
   end
 
   if blocksOnGround > 1 then
-    love.filesystem.write("data", tostring(maxScore), 1)
+    love.filesystem.write("data", tostring(maxScore), 2)
 
     love.load()
   end
