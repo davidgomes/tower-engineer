@@ -3,7 +3,7 @@
 ]]--
 
 function love.load()
-  love.physics.setMeter(64)
+  -- love.physics.setMeter(64)
   world = love.physics.newWorld(0, 9.8 * 64, true)
   blocks = {}
   canAddBlock = true
