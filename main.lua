@@ -7,7 +7,7 @@ function love.load()
   world = love.physics.newWorld(0, 9.8 * 64, true)
   blocks = {}
   canAddBlock = true
-  newBlock = {width = 150, height = 20}
+  newBlock = {width = 200, height = 20}
 
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
@@ -47,7 +47,7 @@ function love.update(dt)
       
       if #blocks ~= 1 then
         newBlock.width = math.random(5, 100)
-        newBlock.height = math.random(5, 40)
+        newBlock.height = math.random(5, 30)
       end
       
       table.insert(blocks, block)
