@@ -7,6 +7,7 @@ function love.load()
   world = love.physics.newWorld(0, 9.8 * 64, true)
   blocks = {}
   canAddBlock = true
+  newBlock = {width = 150, height = 20}
 
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
@@ -26,6 +27,9 @@ function love.load()
   -- Set up graphics
   love.graphics.setBackgroundColor(104, 136, 248)
   love.graphics.setMode(650, 700, false, true, 0)
+
+  -- Load font
+  love.graphics.setNewFont(20)
 end
 
 function love.update(dt)
@@ -34,12 +38,18 @@ function love.update(dt)
   -- Add new blocks
   if love.mouse.isDown("l") then
     if canAddBlock then
-      newBlock = {}
-      newBlock.body = love.physics.newBody(world, love.mouse.getX(), love.mouse.getY(), "dynamic")
-      newBlock.shape = love.physics.newRectangleShape(0, 0, 20, 20)
-      newBlock.fixture = love.physics.newFixture(newBlock.body, newBlock.shape, 100)
+      local block = {}
+      block.body = love.physics.newBody(world, love.mouse.getX(), love.mouse.getY(), "dynamic")
+      block.shape = love.physics.newRectangleShape(0, 0, newBlock.width, newBlock.height)
+      block.height = newBlock.height
+      block.fixture = love.physics.newFixture(block.body, block.shape, 100)
 
-      table.insert(blocks, newBlock)
+      if #blocks ~= 1 then
+        newBlock.width = math.random(5, 100)
+        newBlock.height = math.random(5, 40)
+      end
+      
+      table.insert(blocks, block)
       canAddBlock = false
     end
   else
@@ -50,7 +60,7 @@ function love.update(dt)
   local blocksOnGround = 0
   for i = 1, #blocks do
 
-    if blocks[i].body:getY() > 638 then
+    if blocks[i].body:getY() + blocks[i].height > 650 then
       blocksOnGround = blocksOnGround + 1
     end
   end
@@ -68,7 +78,7 @@ function love.update(dt)
 
   -- Restart game
   if love.keyboard.isDown("r") then
-    blocks = {}
+    love.load()
   end
 
   -- Exit the game
@@ -88,7 +98,17 @@ function love.draw()
     love.graphics.polygon("fill", blocks[i].body:getWorldPoints(blocks[i].shape:getPoints()))
   end
 
+  -- Draw next block
+  love.graphics.setColor(255, 240, 240, 50)
+  love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
+
   -- Draw the score
-  love.graphics.print(#blocks, 10, 10)
-  love.graphics.print(maxScore, 630, 10)
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.print(#blocks, 10, 8)
+  love.graphics.print(maxScore, 10, 35)
+
+  -- Draw welcome message
+  if #blocks == 0 then
+    love.graphics.print("Left click to insert a block.\nTry to make a huge tower.", 200, 400)
+  end
 end
