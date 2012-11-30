@@ -43,7 +43,8 @@ function love.update(dt)
       block.shape = love.physics.newRectangleShape(0, 0, newBlock.width, newBlock.height)
       block.height = newBlock.height
       block.fixture = love.physics.newFixture(block.body, block.shape, 100)
-
+      block.fixture:setRestitution(0)
+      
       if #blocks ~= 1 then
         newBlock.width = math.random(5, 100)
         newBlock.height = math.random(5, 40)
