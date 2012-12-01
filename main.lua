@@ -45,6 +45,7 @@ function love.update(dt)
     if love.mouse.isDown("l") then
       if canAddBlock then
         local block = {}
+        block.color = {math.random(40, 60), math.random(40, 60), math.random(40, 60)}
         block.body = love.physics.newBody(world, love.mouse.getX(), love.mouse.getY(), "dynamic")
         block.shape = love.physics.newRectangleShape(0, 0, newBlock.width, newBlock.height)
         block.height = newBlock.height
@@ -92,8 +93,8 @@ function love.draw()
   love.graphics.polygon("fill", ground.body:getWorldPoints(ground.shape:getPoints()))
 
   -- Draw the blocks
-  love.graphics.setColor(50, 50, 50)
   for i = 1, #blocks do
+    love.graphics.setColor(blocks[i].color)
     love.graphics.polygon("fill", blocks[i].body:getWorldPoints(blocks[i].shape:getPoints()))
   end
 
