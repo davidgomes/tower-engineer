@@ -118,7 +118,7 @@ function love.draw()
 
   if currentState == "over" then
     love.graphics.print("Game Over", 265, 50)
-    love.graphics.setBlendMode("subtractive")
+    love.graphics.setBlendMode("multiplicative")
   else
     love.graphics.setBlendMode("alpha")
   end
