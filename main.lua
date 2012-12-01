@@ -3,22 +3,42 @@
 ]]--
 
 function love.load()
+  -- Prepare in-game variables
+  init()
+
+  -- Set up graphics
+  love.graphics.setBackgroundColor(104, 136, 248)
+  love.graphics.setMode(650, 700, false, true, 0)
+
+  -- Load font
+  love.graphics.setNewFont(20)
+end
+
+function init()
+  -- Set up the physics.world
   currentState = "play"
   world = love.physics.newWorld(0, 9.8 * 64, true)
   world:setCallbacks(beginContact, nil, nil, nil)
   numberOfCollisions = 0
 
+  -- Set up blocks
   blocks = {}
   canAddBlock = true
   newBlock = {width = 200, height = 20}
   nextBlock = {width = math.random(5, 100), height = math.random(5, 30)}
 
+  -- Set up graphics
+  background = love.graphics.newImage("res/sky.png")
+  background:setWrap("repeat", "clamp")
+  backgroundQuad = love.graphics.newQuad(0, 0, 800, 700, 1, 700)
+  
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
   if not love.filesystem.isFile("data") then
     love.filesystem.write("data", "0", 2)
   end
 
+  -- Read maximum score
   local contents, length = love.filesystem.read("data", 2)
   maxScore = tonumber(contents)
 
@@ -28,13 +48,6 @@ function love.load()
   ground.shape = love.physics.newRectangleShape(650 * 2, 50)
   ground.fixture = love.physics.newFixture(ground.body, ground.shape)
   ground.fixture:setUserData("ground")
-
-  -- Set up graphics
-  love.graphics.setBackgroundColor(104, 136, 248)
-  love.graphics.setMode(650, 700, false, true, 0)
-
-  -- Load font
-  love.graphics.setNewFont(20)
 end
 
 function love.update(dt)
@@ -67,7 +80,6 @@ function love.update(dt)
     -- Check if player lost
     if numberOfCollisions > 1 then
       love.filesystem.write("data", tostring(maxScore), 2)
-
       currentState = "over"
     end
 
@@ -77,7 +89,7 @@ function love.update(dt)
     end
   elseif currentState == "over" then
     if love.mouse.isDown("l") then
-      love.load()
+      init()
     end
   end
 
@@ -88,6 +100,10 @@ function love.update(dt)
 end
 
 function love.draw()
+  -- Draw background
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.drawq(background, backgroundQuad, 0, 0)
+  
   -- Draw the ground
   love.graphics.setColor(72, 160, 14)
   love.graphics.polygon("fill", ground.body:getWorldPoints(ground.shape:getPoints()))
@@ -104,7 +120,7 @@ function love.draw()
     love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
 
     -- Draw next block
-    love.graphics.setColor(255, 240, 240, 15)
+    love.graphics.setColor(255, 240, 240, 30)
     love.graphics.rectangle("fill", love.mouse.getX() - nextBlock.width / 2, love.mouse.getY()- nextBlock.height / 2 - 100, nextBlock.width, nextBlock.height)
   end
 
@@ -115,9 +131,11 @@ function love.draw()
 
   -- Draw welcome message
   if #blocks == 0 then
+    love.graphics.setColor(0, 0, 0)
     love.graphics.print("Left click to insert a block.\nTry to make a huge tower.", 200, 400)
   end
 
+  -- Change blend mode for game over screen
   if currentState == "over" then
     love.graphics.print("Game Over", 265, 50)
     love.graphics.setBlendMode("multiplicative")
@@ -126,6 +144,7 @@ function love.draw()
   end
 end
 
+-- Handle collison between a block and the ground
 function beginContact(a, b, collision)
   if a:getUserData() == "ground" or b:getUserData() == "ground" then
     numberOfCollisions = numberOfCollisions + 1
