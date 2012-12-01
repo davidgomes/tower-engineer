@@ -98,13 +98,15 @@ function love.draw()
     love.graphics.polygon("fill", blocks[i].body:getWorldPoints(blocks[i].shape:getPoints()))
   end
 
-  -- Draw block
-  love.graphics.setColor(255, 240, 240, 70)
-  love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
+  if currentState == "play" then
+    -- Draw block
+    love.graphics.setColor(255, 240, 240, 70)
+    love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
 
-  -- Draw next block
-  love.graphics.setColor(255, 240, 240, 15)
-  love.graphics.rectangle("fill", love.mouse.getX() - nextBlock.width / 2, love.mouse.getY()- nextBlock.height / 2 - 100, nextBlock.width, nextBlock.height)
+    -- Draw next block
+    love.graphics.setColor(255, 240, 240, 15)
+    love.graphics.rectangle("fill", love.mouse.getX() - nextBlock.width / 2, love.mouse.getY()- nextBlock.height / 2 - 100, nextBlock.width, nextBlock.height)
+  end
 
   -- Draw the score
   love.graphics.setColor(0, 0, 0)
