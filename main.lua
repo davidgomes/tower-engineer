@@ -7,6 +7,14 @@ function love.load()
   init()
 
   -- Set up graphics
+  background = love.graphics.newImage("res/sky.png")
+  background:setWrap("repeat", "clamp")
+  backgroundQuad = love.graphics.newQuad(0, 0, 650, 700, 1, 700)
+
+  grass = love.graphics.newImage("res/grass.png")
+  grass:setWrap("repeat", "clamp")
+  grassQuad = love.graphics.newQuad(0, 0, 650, 50, 1, 50)
+  
   love.graphics.setBackgroundColor(104, 136, 248)
   love.graphics.setMode(650, 700, false, true, 0)
 
@@ -26,11 +34,6 @@ function init()
   canAddBlock = true
   newBlock = {width = 200, height = 20}
   nextBlock = {width = math.random(5, 100), height = math.random(5, 30)}
-
-  -- Set up graphics
-  background = love.graphics.newImage("res/sky.png")
-  background:setWrap("repeat", "clamp")
-  backgroundQuad = love.graphics.newQuad(0, 0, 800, 700, 1, 700)
   
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
@@ -107,7 +110,8 @@ function love.draw()
   -- Draw the ground
   love.graphics.setColor(72, 160, 14)
   love.graphics.polygon("fill", ground.body:getWorldPoints(ground.shape:getPoints()))
-
+  love.graphics.drawq(grass, grassQuad, 0, 650)
+  
   -- Draw the blocks
   for i = 1, #blocks do
     love.graphics.setColor(blocks[i].color)
