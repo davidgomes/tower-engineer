@@ -25,7 +25,7 @@ function love.load()
   -- Create the ground
   ground = {}
   ground.body = love.physics.newBody(world, 650 / 2, 700 - 50 / 2, "static")
-  ground.shape = love.physics.newRectangleShape(650, 50)
+  ground.shape = love.physics.newRectangleShape(650 * 2, 50)
   ground.fixture = love.physics.newFixture(ground.body, ground.shape)
   ground.fixture:setUserData("ground")
 
@@ -66,7 +66,6 @@ function love.update(dt)
     -- Check if player lost
     if numberOfCollisions > 1 then
       love.filesystem.write("data", tostring(maxScore), 2)
-      -- love.load()
 
       currentState = "over"
     end
