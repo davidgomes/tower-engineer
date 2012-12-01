@@ -2,16 +2,9 @@
   Tower Engineer - A simple 2D game where you have to make towers
 ]]--
 
-function love.load()
-  currentState = "play"
-  world = love.physics.newWorld(0, 9.8 * 64, true)
-  world:setCallbacks(beginContact, nil, nil, nil)
-  numberOfCollisions = 0
 
-  blocks = {}
-  canAddBlock = true
-  newBlock = {width = 200, height = 20}
-  nextBlock = {width = math.random(5, 100), height = math.random(5, 30)}
+function love.load()
+  init()
 
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
@@ -22,51 +15,74 @@ function love.load()
   local contents, length = love.filesystem.read("data", 2)
   maxScore = tonumber(contents)
 
+  -- Load font
+  love.graphics.setNewFont(20)
+
+  love.graphics.setMode(650, 700, false, true, 0)
+end
+
+function init()
+  currentState = "play"
+  numberOfCollisions = 0
+
+  world = love.physics.newWorld(0, 9.8 * 64, true)
+  world:setCallbacks(beginContact, nil, nil, nil)
+
+  blocks = {}
+  canAddBlock = true
+  newBlock = {width = 200, height = 20}
+  nextBlock = {width = math.random(5, 100), 
+      height = math.random(5, 30)}
+
   -- Create the ground
   ground = {}
-  ground.body = love.physics.newBody(world, 650 / 2, 700 - 50 / 2, "static")
-  ground.shape = love.physics.newRectangleShape(650 * 2, 50)
+  ground.body = love.physics.newBody(world, 650 / 2, 
+      700 - 50 / 2, "static")
+  ground.shape = love.physics.newRectangleShape(650, 50)
   ground.fixture = love.physics.newFixture(ground.body, ground.shape)
   ground.fixture:setUserData("ground")
 
   -- Set up graphics
   love.graphics.setBackgroundColor(104, 136, 248)
-  love.graphics.setMode(650, 700, false, true, 0)
-
-  -- Load font
-  love.graphics.setNewFont(20)
 end
 
-function love.update(dt)
-  if currentState == "play" then
-    world:update(dt)
-
-    -- Add new blocks
-    if love.mouse.isDown("l") then
-      if canAddBlock then
+function love.mousepressed(x, y, button)
+  if button == "l" then
+    if currentState == "play" then
         local block = {}
-        block.color = {math.random(40, 60), math.random(40, 60), math.random(40, 60)}
-        block.body = love.physics.newBody(world, love.mouse.getX(), love.mouse.getY(), "dynamic")
-        block.shape = love.physics.newRectangleShape(0, 0, newBlock.width, newBlock.height)
+        block.color = {math.random(40, 60), math.random(40, 60),  
+            math.random(40, 60)}
+        block.body = love.physics.newBody(world, 
+            love.mouse.getX(), love.mouse.getY(), "dynamic")
+        block.shape = love.physics.newRectangleShape(0, 0,    
+            newBlock.width, newBlock.height)
         block.height = newBlock.height
-        block.fixture = love.physics.newFixture(block.body, block.shape, 100)
+        block.fixture = love.physics.newFixture(block.body,
+            block.shape, 100)
         block.fixture:setRestitution(0)
 
-        newBlock.width, newBlock.height = nextBlock.width, nextBlock.height
+        newBlock.width, newBlock.height = nextBlock.width, 
+            nextBlock.height
 
         nextBlock.width = math.random(5, 100)
         nextBlock.height = math.random(5, 30)
 
         table.insert(blocks, block)
         canAddBlock = false
-      end
-    else
-      canAddBlock = true
+    elseif currentState == "over" then
+      init()
     end
+  end
+end
+
+function love.update(dt)
+  if currentState == "play" then
+    world:update(dt)
 
     -- Check if player lost
     if numberOfCollisions > 1 then
       love.filesystem.write("data", tostring(maxScore), 2)
+      -- love.load()
 
       currentState = "over"
     end
@@ -75,12 +91,7 @@ function love.update(dt)
     if #blocks > maxScore then
       maxScore = #blocks
     end
-  elseif currentState == "over" then
-    if love.mouse.isDown("l") then
-      love.load()
-    end
   end
-
   -- Exit the game
   if love.keyboard.isDown("escape") then
     love.event.quit()
