@@ -5,9 +5,13 @@
 function love.load()
   -- love.physics.setMeter(64)
   world = love.physics.newWorld(0, 9.8 * 64, true)
+  world:setCallbacks(beginContact, nil, nil, nil)
+  numberOfCollisions = 0
+
   blocks = {}
   canAddBlock = true
   newBlock = {width = 200, height = 20}
+  nextBlock = {width = math.random(5, 100), height = math.random(5, 30)}
 
   -- Set up score
   love.filesystem.setIdentity("tower_engineer")
@@ -20,9 +24,10 @@ function love.load()
 
   -- Create the ground
   ground = {}
-  ground.body = love.physics.newBody(world, 650 / 2, 700 - 50 / 2)
+  ground.body = love.physics.newBody(world, 650 / 2, 700 - 50 / 2, "static")
   ground.shape = love.physics.newRectangleShape(650, 50)
   ground.fixture = love.physics.newFixture(ground.body, ground.shape)
+  ground.fixture:setUserData("ground")
 
   -- Set up graphics
   love.graphics.setBackgroundColor(104, 136, 248)
@@ -44,12 +49,12 @@ function love.update(dt)
       block.height = newBlock.height
       block.fixture = love.physics.newFixture(block.body, block.shape, 100)
       block.fixture:setRestitution(0)
-      
-      if #blocks ~= 1 then
-        newBlock.width = math.random(5, 100)
-        newBlock.height = math.random(5, 30)
-      end
-      
+
+      newBlock.width, newBlock.height = nextBlock.width, nextBlock.height
+
+      nextBlock.width = math.random(5, 100)
+      nextBlock.height = math.random(5, 30)
+
       table.insert(blocks, block)
       canAddBlock = false
     end
@@ -58,17 +63,8 @@ function love.update(dt)
   end
 
   -- Check if player lost
-  local blocksOnGround = 0
-  for i = 1, #blocks do
-
-    if blocks[i].body:getY() + blocks[i].height > 650 then
-      blocksOnGround = blocksOnGround + 1
-    end
-  end
-
-  if blocksOnGround > 1 then
+  if numberOfCollisions > 1 then
     love.filesystem.write("data", tostring(maxScore), 2)
-
     love.load()
   end
 
@@ -99,9 +95,12 @@ function love.draw()
     love.graphics.polygon("fill", blocks[i].body:getWorldPoints(blocks[i].shape:getPoints()))
   end
 
-  -- Draw next block
+  -- Draw block
   love.graphics.setColor(255, 240, 240, 50)
   love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
+
+  -- Draw next block
+  love.graphics.rectangle("fill", 10, 70, nextBlock.width, nextBlock.height)
 
   -- Draw the score
   love.graphics.setColor(0, 0, 0)
@@ -111,5 +110,11 @@ function love.draw()
   -- Draw welcome message
   if #blocks == 0 then
     love.graphics.print("Left click to insert a block.\nTry to make a huge tower.", 200, 400)
+  end
+end
+
+function beginContact(a, b, collision)
+  if a:getUserData() == "ground" or b:getUserData() == "ground" then
+    numberOfCollisions = numberOfCollisions + 1
   end
 end
