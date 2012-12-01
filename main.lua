@@ -66,55 +66,58 @@ function love.update(dt)
     -- Check if player lost
     if numberOfCollisions > 1 then
       love.filesystem.write("data", tostring(maxScore), 2)
-      love.load()
+      -- love.load()
+
+      currentState = "over"
     end
 
     -- Update maximum score
     if #blocks > maxScore then
       maxScore = #blocks
     end
-
-    -- Restart game
-    if love.keyboard.isDown("r") then
+  elseif currentState == "over" then
+    if love.mouse.isDown("l") then
       love.load()
     end
+  end
 
-    -- Exit the game
-    if love.keyboard.isDown("escape") then
-      love.event.quit()
-    end
+  -- Exit the game
+  if love.keyboard.isDown("escape") then
+    love.event.quit()
   end
 end
 
 function love.draw()
-  if currentState == "play" then
-    -- Draw the ground
-    love.graphics.setColor(72, 160, 14)
-    love.graphics.polygon("fill", ground.body:getWorldPoints(ground.shape:getPoints()))
+  -- Draw the ground
+  love.graphics.setColor(72, 160, 14)
+  love.graphics.polygon("fill", ground.body:getWorldPoints(ground.shape:getPoints()))
 
-    -- Draw the blocks
-    love.graphics.setColor(50, 50, 50)
-    for i = 1, #blocks do
-      love.graphics.polygon("fill", blocks[i].body:getWorldPoints(blocks[i].shape:getPoints()))
-    end
+  -- Draw the blocks
+  love.graphics.setColor(50, 50, 50)
+  for i = 1, #blocks do
+    love.graphics.polygon("fill", blocks[i].body:getWorldPoints(blocks[i].shape:getPoints()))
+  end
 
-    -- Draw block
-    love.graphics.setColor(255, 240, 240, 70)
-    love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
+  -- Draw block
+  love.graphics.setColor(255, 240, 240, 70)
+  love.graphics.rectangle("fill", love.mouse.getX() - newBlock.width / 2, love.mouse.getY() - newBlock.height / 2, newBlock.width, newBlock.height)
 
-    -- Draw next block
-    love.graphics.setColor(255, 240, 240, 15)
-    love.graphics.rectangle("fill", love.mouse.getX() - nextBlock.width / 2, love.mouse.getY()- nextBlock.height / 2 - 100, nextBlock.width, nextBlock.height)
+  -- Draw next block
+  love.graphics.setColor(255, 240, 240, 15)
+  love.graphics.rectangle("fill", love.mouse.getX() - nextBlock.width / 2, love.mouse.getY()- nextBlock.height / 2 - 100, nextBlock.width, nextBlock.height)
 
-    -- Draw the score
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print(#blocks, 10, 8)
-    love.graphics.print(maxScore, 10, 35)
+  -- Draw the score
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.print(#blocks, 10, 8)
+  love.graphics.print(maxScore, 10, 35)
 
-    -- Draw welcome message
-    if #blocks == 0 then
-      love.graphics.print("Left click to insert a block.\nTry to make a huge tower.", 200, 400)
-    end
+  -- Draw welcome message
+  if #blocks == 0 then
+    love.graphics.print("Left click to insert a block.\nTry to make a huge tower.", 200, 400)
+  end
+
+  if currentState == "over" then
+    love.graphics.print("Game Over", 265, 50)
   end
 end
 
