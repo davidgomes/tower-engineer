@@ -5,6 +5,8 @@ About
 -----
 A simple 2D game where you have to build a huge tower. Use your mouse to place randomly-sized blocks on top of each other and make sure the tower doesn't fall apart.
 
+![Tower Engineer](https://github.com/davidgomes/tower-engineer/blob/master/screenshot.png "Tower Engineer")
+
 Technology
 ----------
 Made with [Lua](http://www.lua.org) and [LÖVE](http://www.love2d.org).
