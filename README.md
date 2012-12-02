@@ -17,4 +17,4 @@ Tower Engineer is licensed under the [Do What The Fuck You Want License](https:/
 
 Thanks
 ------
-I'd like to thank all the guys on #/g/amedev for giving me ideas and finding exploits on the game.
+I'd like to thank all the guys on #/g/amedev for giving me ideas and finding exploits on the game. I'd like to thank [Jubjub](https://github.com/Metanoia) for making some Windows binaries.
