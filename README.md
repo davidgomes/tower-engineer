@@ -7,7 +7,7 @@ A simple 2D game where you have to build a huge tower. Use your mouse to place r
 
 Technology
 ----------
-Made with [http://www.lua.org](Lua) and [http://www.love2d.org](love2d).
+Made with [Lua](http://www.lua.org) and [LÖVE](http://www.love2d.org).
 
 License
 -------
