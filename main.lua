@@ -1,5 +1,7 @@
 --[[
   Tower Engineer - A simple 2D game where you have to make towers
+
+  Written by: David Gomes
 ]]--
 
 function love.load()
