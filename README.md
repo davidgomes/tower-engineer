@@ -3,11 +3,11 @@ Tower Engineer
 
 About
 -----
-A simple 2D game where you have to build a huge tower.
+A simple 2D game where you have to build a huge tower. Use your mouse to place randomly-sized blocks on top of each other and make sure the tower doesn't fall apart.
 
 Technology
 ----------
-Made with [http://www.lua.org](Lua) and (http://www.love2d.org)[love2d].
+Made with [http://www.lua.org](Lua) and [http://www.love2d.org](love2d).
 
 License
 -------
