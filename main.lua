@@ -18,7 +18,7 @@ function love.load()
   grassQuad = love.graphics.newQuad(0, 0, 650, 50, 1, 50)
   
   love.graphics.setBackgroundColor(104, 136, 248)
-  love.graphics.setMode(650, 700, false, true, 0)
+  love.window.setMode(650, 700, { vsync=true })
 
   -- Load font
   love.graphics.setNewFont(20)
@@ -107,12 +107,12 @@ end
 function love.draw()
   -- Draw background
   love.graphics.setColor(255, 255, 255)
-  love.graphics.drawq(background, backgroundQuad, 0, 0)
+  love.graphics.draw(background, backgroundQuad, 0, 0)
   
   -- Draw the ground
   love.graphics.setColor(72, 160, 14)
   love.graphics.polygon("fill", ground.body:getWorldPoints(ground.shape:getPoints()))
-  love.graphics.drawq(grass, grassQuad, 0, 650)
+  love.graphics.draw(grass, grassQuad, 0, 650)
   
   -- Draw the blocks
   for i = 1, #blocks do
